@@ -1,0 +1,73 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study - Frank's Personal Chess</title>
+    <link rel="stylesheet" href="{% static 'chess/css/style.css' %}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ecf0f1;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #2980b9;
+            font-weight: bold;
+        }
+        p {
+            color: #2c3e50;
+            font-size: 1.1rem;
+        }
+        .study-topics {
+            margin-top: 20px;
+        }
+        .topic {
+            display: inline-block;
+            margin: 10px;
+            padding: 15px;
+            background-color: #3498db;
+            color: white;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .topic:hover {
+            background-color: #1abc9c;
+        }
+    </style>
+</head>
+<body>
+    <div class="container text-center">
+        <h2>Study</h2>
+        <p>Access lessons and tutorials to improve your chess knowledge.</p>
+
+        <div class="study-topics">
+            <div class="topic" onclick="startLesson('opening')">Opening Principles</div>
+            <div class="topic" onclick="startLesson('middlegame')">Middlegame Tactics</div>
+            <div class="topic" onclick="startLesson('endgame')">Endgame Strategies</div>
+        </div>
+    </div>
+
+    <!-- Load any necessary JavaScript -->
+    <script>
+        function startLesson(topic) {
+            alert('Starting lesson on ' + topic + '!');
+            // Logic to load specific lessons based on the chosen topic
+        }
+    </script>
+</body>
+</html>

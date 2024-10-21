@@ -1,0 +1,239 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frank's Personal Chess</title>
+
+    <!-- Load Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    
+    <!-- Load Chessboard.js CSS -->
+    <link rel="stylesheet" href="{% static 'chess/css/chessboard-1.0.0.min.css' %}">
+
+    <style>
+        body {
+            padding-top: 20px;
+        }
+        #board {
+            width: 400px;
+            margin: 0 auto;
+        }
+        .notation, .engine, .notes {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-top: 20px;
+        }
+        .notation table {
+            width: 100%;
+            text-align: center;
+        }
+        .notation th, .notation td {
+            padding: 5px;
+            border: 1px solid #ccc;
+        }
+        .export-buttons {
+            margin-top: 20px;
+        }
+        .footer {
+            background-color: #f8f9fa;
+            padding: 20px;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+        .footer .nav-link {
+            color: #007bff;
+        }
+        .footer .nav-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="bg-light text-center py-3">
+        <h1>Frank's Personal Chess</h1>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <h1 class="text-center">Play Chess</h1>
+        <div class="row">
+            <div class="col-md-6">
+                <div id="board" class="mt-4"></div>
+                <button class="btn btn-primary mt-3" id="startBtn">Start Game</button>
+            </div>
+            <div class="col-md-6">
+                <div class="notation">
+                    <h5>Move Notation</h5>
+                    <table id="notationTable">
+                        <thead>
+                            <tr>
+                                <th>Move #</th>
+                                <th>White</th>
+                                <th>Black</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Moves will be dynamically inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="engine">
+                    <h5>Engine Analysis</h5>
+                    <div id="engineAnalysis">Engine moves and evaluations will appear here.</div>
+                </div>
+                <div class="notes">
+                    <h5>Notes</h5>
+                    <textarea id="notesArea" rows="4" class="form-control" placeholder="Write your notes here..."></textarea>
+                </div>
+
+                <!-- Export PGN and FEN -->
+                <div class="export-buttons">
+                    <button class="btn btn-success" id="exportPGN">Export PGN</button>
+                    <button class="btn btn-secondary" id="exportFEN">Export FEN</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <nav class="nav justify-content-center">
+            <a class="nav-link" href="{% url 'home' %}">Home</a>
+            <a class="nav-link" href="{% url 'play_bots' %}">Play Bots</a>
+            <a class="nav-link" href="{% url 'puzzles' %}">Puzzles</a>
+            <a class="nav-link" href="{% url 'study' %}">Study</a>
+            <a class="nav-link" href="{% url 'games' %}">Games</a>
+        </nav>
+    </footer>
+
+    <!-- Load jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <!-- Load Chessboard.js and Chess.js -->
+    <script src="{% static 'chess/js/chessboard-1.0.0.min.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stockfish/stockfish.js"></script>
+
+    <script>
+        // Initialize the Chess class from chess.js
+        const { Chess } = require('chess.js');
+        var game = new Chess(); // Initialize the game
+        var stockfish = new Worker("https://cdn.jsdelivr.net/npm/stockfish/stockfish.js"); // Initialize Stockfish
+        var moveNumber = 1; // Track the move number
+
+        // Initialize the Chessboard with piece images
+        var board = Chessboard('board', {
+            draggable: true,
+            position: 'start',
+            onDrop: onDrop,
+            pieceTheme: function(piece) {
+                return "{% static 'chess/img/pieces/' %}" + piece + '.png';
+            }
+        });
+
+        $('#startBtn').on('click', function () {
+            board.start();
+            game.reset();
+            moveNumber = 1;
+            $('#notationTable tbody').empty(); // Clear notation
+            $('#engineAnalysis').empty(); // Clear analysis
+        });
+
+        // When a piece is dropped
+        function onDrop(source, target) {
+            var move = game.move({
+                from: source,
+                to: target,
+                promotion: 'q' // Always promote to a queen for simplicity
+            });
+
+            if (move === null) return 'snapback'; // Illegal move
+
+            // Handle castling
+            if (move.flags.includes('k')) { // Kingside castling
+                if (move.color === 'w') {
+                    board.move('h1', 'f1'); // Move the white rook
+                } else {
+                    board.move('h8', 'f8'); // Move the black rook
+                }
+            } else if (move.flags.includes('q')) { // Queenside castling
+                if (move.color === 'w') {
+                    board.move('a1', 'd1'); // Move the white rook
+                } else {
+                    board.move('a8', 'd8'); // Move the black rook
+                }
+            }
+
+            // Record the move in the notation section
+            updateNotation(move);
+
+            // Analyze the position with Stockfish after the move
+            analyzePosition();
+
+            // Check for game end conditions
+            checkGameOver();
+        }
+
+        // Update the move notation in a table format
+        function updateNotation(move) {
+            var notationTable = $('#notationTable tbody');
+            var moveText = move.san;
+
+            // Check if it's White's turn (odd number) or Black's (even number)
+            if (game.turn() === 'b') {
+                // White's move, create a new row with the move number
+                notationTable.append(
+                    '<tr>' +
+                        '<td>' + moveNumber + '</td>' + 
+                        '<td>' + moveText + '</td>' +
+                        '<td></td>' + // Black's move will go here later
+                    '</tr>'
+                );
+            } else {
+                // Black's move, update the last row's Black cell
+                var lastRow = notationTable.find('tr').last();
+                lastRow.find('td:last').text(moveText);
+                moveNumber++; // Increment the move number after Black moves
+            }
+        }
+
+        // Analyze the position using Stockfish
+        function analyzePosition() {
+            var fen = game.fen(); // Get the current board position in FEN
+            stockfish.postMessage("position fen " + fen);
+            stockfish.postMessage("go depth 15");
+        }
+
+        stockfish.onmessage = function(event) {
+            var engineOutput = event.data;
+            if (engineOutput.includes("bestmove")) {
+                $('#engineAnalysis').append('<p>' + engineOutput + '</p>');
+            }
+        };
+
+        // Check for game end conditions (checkmate, stalemate, draw, or resignation)
+        function checkGameOver() {
+            if (game.in_checkmate()) {
+                alert('Checkmate! Game over.');
+            } else if (game.in_stalemate() || game.in_draw()) {
+                alert('Game is a draw.');
+            }
+        }
+
+        // Export PGN and FEN
+        $('#exportPGN').on('click', function() {
+            var pgn = game.pgn();
+            alert('Exported PGN:\n' + pgn); // You can change this to download if needed
+        });
+
+        $('#exportFEN').on('click', function() {
+            var fen = game.fen();
+            alert('Exported FEN:\n' + fen); // You can change this to download if needed
+        });
+    </script>
+</body>
+</html>

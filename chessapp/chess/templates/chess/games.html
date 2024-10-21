@@ -1,0 +1,77 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Games - Frank's Personal Chess</title>
+    <link rel="stylesheet" href="{% static 'chess/css/style.css' %}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        p {
+            color: #34495e;
+            font-size: 1.1rem;
+        }
+        .game-options {
+            margin-top: 20px;
+        }
+        .option {
+            display: inline-block;
+            margin: 10px;
+            padding: 15px;
+            background-color: #e74c3c;
+            color: white;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .option:hover {
+            background-color: #c0392b;
+        }
+    </style>
+</head>
+<body>
+    <div class="container text-center">
+        <h2>Games</h2>
+        <p>Explore and analyze previously played games or start a new match.</p>
+
+        <div class="game-options">
+            <div class="option" onclick="startGame()">Start New Game</div>
+            <div class="option" onclick="analyzeGame()">Analyze Past Games</div>
+        </div>
+    </div>
+
+    <!-- Load any necessary JavaScript -->
+    <script>
+        function startGame() {
+            alert('Starting a new game!');
+            // Logic for starting a new game can be implemented here
+        }
+
+        function analyzeGame() {
+            alert('Analyzing past games...');
+            // Logic for analyzing previous games can be added here
+        }
+    </script>
+</body>
+</html>

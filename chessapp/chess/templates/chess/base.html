@@ -1,0 +1,57 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Frank's Personal Chess{% endblock %}</title>
+
+    <!-- Load Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    
+    <!-- Load custom CSS -->
+    <link rel="stylesheet" href="{% static 'chess/css/styles.css' %}">
+
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <header class="bg-light text-center py-3">
+        <h1>Frank's Personal Chess</h1>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container">
+                <a class="navbar-brand" href="{% url 'home' %}">Home</a>
+                <div class="collapse navbar-collapse">
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item"><a class="nav-link" href="{% url 'puzzles' %}">Puzzles</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'play_bots' %}">Play Bots</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'study' %}">Study</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'games' %}">Games</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'play' %}">Play Chess</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+
+    <footer class="bg-light text-center py-3">
+        <div class="container">
+            <p>
+                <a href="{% url 'puzzles' %}">Puzzles</a> |
+                <a href="{% url 'play_bots' %}">Play Bots</a> |
+                <a href="{% url 'study' %}">Study</a> |
+                <a href="{% url 'games' %}">Games</a>
+            </p>
+            <p>&copy; 2024 Frank's Personal Chess. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Load jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,73 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Puzzles - Frank's Personal Chess</title>
+    <link rel="stylesheet" href="{% static 'chess/css/style.css' %}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ecf0f1;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #8e44ad;
+            font-weight: bold;
+        }
+        p {
+            color: #2c3e50;
+            font-size: 1.1rem;
+        }
+        .puzzle-levels {
+            margin-top: 20px;
+        }
+        .puzzle-level {
+            display: inline-block;
+            margin: 10px;
+            padding: 20px;
+            background-color: #e67e22;
+            color: white;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .puzzle-level:hover {
+            background-color: #d35400;
+        }
+    </style>
+</head>
+<body>
+    <div class="container text-center">
+        <h2>Puzzles</h2>
+        <p>Here you can solve chess puzzles to improve your tactics.</p>
+
+        <div class="puzzle-levels">
+            <div class="puzzle-level" onclick="startPuzzle('easy')">Easy Puzzles</div>
+            <div class="puzzle-level" onclick="startPuzzle('medium')">Medium Puzzles</div>
+            <div class="puzzle-level" onclick="startPuzzle('hard')">Hard Puzzles</div>
+        </div>
+    </div>
+
+    <!-- Load any necessary JavaScript -->
+    <script>
+        function startPuzzle(level) {
+            alert('Starting ' + level + ' puzzles!');
+            // Logic to load puzzles based on the selected level
+        }
+    </script>
+</body>
+</html>

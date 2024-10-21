@@ -1,0 +1,74 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Play Bots - Frank's Personal Chess</title>
+    <link rel="stylesheet" href="{% static 'chess/css/style.css' %}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #2c3e50;
+            font-weight: bold;
+        }
+        p {
+            color: #34495e;
+            font-size: 1.1rem;
+        }
+        .bot-levels {
+            margin-top: 20px;
+        }
+        .bot-level {
+            display: inline-block;
+            margin: 10px;
+            padding: 20px;
+            background-color: #3498db;
+            color: white;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .bot-level:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container text-center">
+        <h2>Play Bots</h2>
+        <p>Challenge different levels of bots and test your skills against AI.</p>
+
+        <div class="bot-levels">
+            <div class="bot-level" onclick="startGame('easy')">Easy Bot</div>
+            <div class="bot-level" onclick="startGame('medium')">Medium Bot</div>
+            <div class="bot-level" onclick="startGame('hard')">Hard Bot</div>
+            <div class="bot-level" onclick="startGame('impossible')">Impossible Bot</div>
+        </div>
+    </div>
+
+    <!-- Load any necessary JavaScript -->
+    <script>
+        function startGame(level) {
+            alert('Starting a game against the ' + level + ' bot!');
+            // Logic to load a chess game against the selected bot level
+        }
+    </script>
+</body>
+</html>
